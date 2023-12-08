@@ -10,7 +10,7 @@ import (
 
 func CreateData2() []string {
 	var data []string
-	file, _ := os.Open("day1pt1input.txt")
+	file, _ := os.Open("day1pt2input.txt")
 	scanner := bufio.NewScanner(file)
 
 	for scanner.Scan() {

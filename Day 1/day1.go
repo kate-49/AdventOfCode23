@@ -2,7 +2,6 @@ package Day_1
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -31,10 +30,7 @@ func GetFirstAndLastElementFromArray(intArray []int) []int {
 func SumUpAllElements(intArray [][]int) int {
 	total := 0
 	for i := 0; i < len(intArray); i++ {
-		//condense these into strings to add together
 		stringVariable := strconv.Itoa(intArray[i][0]) + strconv.Itoa(intArray[i][1])
-		fmt.Println("string")
-		fmt.Println(stringVariable)
 		convertedInt, _ := strconv.Atoi(stringVariable)
 		total += convertedInt
 	}
@@ -43,7 +39,6 @@ func SumUpAllElements(intArray [][]int) int {
 
 func Run() int {
 	data := CreateData()
-	fmt.Println(data)
 	numbers := [][]int{}
 
 	for i := 0; i < len(data); i++ {
