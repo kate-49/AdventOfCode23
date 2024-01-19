@@ -21,42 +21,81 @@ func clearString(str string) string {
 	return nonAlphanumericRegex.ReplaceAllString(str, "")
 }
 
-func CreateData() []Game {
+func CreateData() [][]string {
 	var data [][]string
-	var allData []Game
 	file, _ := os.Open("day2pt1input.txt")
 	scanner := bufio.NewScanner(file)
 
 	for scanner.Scan() {
-		entries := strings.Split(strings.TrimSpace(scanner.Text()), " ")
+		entries := strings.Split(scanner.Text(), "Game")
 		data = append(data, entries)
 	}
 
 	_ = file.Close()
 
-	for _, s := range data {
-		game := Game{}
-		//break into sub arrays based on the colons?
-		for k, l := range s {
-			if clearString(l) == "Game" {
-				game.Id, _ = strconv.Atoi(clearString(s[k+1]))
+	var kate [][]string
+	var k2 [][]string
+
+	for i, _ := range data {
+		subgame := []string{}
+		entries := strings.Split(strings.Join(data[i], ","), " ")
+
+		for w, v := range entries {
+			viableSubGame := checkIfSubGameIsViable(clearString(v), w, entries)
+			if !viableSubGame {
+				continue
 			}
-			if clearString(l) == "blue" {
-				numOfBlue, _ := strconv.Atoi(s[k-1])
-				game.Blue += numOfBlue
+			if w > 1 {
+				subgame = append(subgame, clearString(v), entries[w+1])
 			}
-			if clearString(l) == "red" {
-				numOfRed, _ := strconv.Atoi(s[k-1])
-				game.Red += numOfRed
-			}
-			if clearString(l) == "green" {
-				numOfGreen, _ := strconv.Atoi(s[k-1])
-				game.Green += numOfGreen
+			endOfSubGame, _ := regexp.MatchString(";", v)
+			if endOfSubGame == true {
+				kate = append(kate, subgame)
+				i++
+				subgame = []string{}
 			}
 		}
-		allData = append(allData, game)
+		kate = append(kate, subgame)
+		k2 = append(k2, kate[0])
+		kate = [][]string{}
 	}
-	return allData
+
+	for i, _ := range k2 {
+		joinedSubstrings := strings.Join(k2[i], " ")
+		fmt.Println("joinedSubstrings")
+		fmt.Println(joinedSubstrings)
+		splitSubstrings := strings.Split(joinedSubstrings, ";")
+		fmt.Println("splitSubstrings")
+		fmt.Println(splitSubstrings[0])
+	}
+	return k2
+
+	//for i, _ := range kate {
+	//	game := Game{}
+	//	for l, v := range kate[i] {
+	//		fmt.Println("kate")
+	//		fmt.Println(i)
+	//		fmt.Println(kate[i])
+	//
+	//		if clearString(v) == "blue" {
+	//			fmt.Println(kate[i][l-1])
+	//			numOfBlue, _ := strconv.Atoi(kate[i][l-1])
+	//			game.Blue = numOfBlue
+	//		}
+	//		if clearString(v) == "red" {
+	//			numOfRed, _ := strconv.Atoi(kate[i][l-1])
+	//			game.Red = numOfRed
+	//		}
+	//		if clearString(v) == "green" {
+	//			numOfGreen, _ := strconv.Atoi(kate[i][l-1])
+	//			game.Green = numOfGreen
+	//		}
+	//	}
+	//	row = append(row, game)
+	//}
+
+	//return row
+
 }
 
 func Run() int {
@@ -65,22 +104,45 @@ func Run() int {
 
 	total := 0
 
+	//for i := 0; i < len(gameData); i++ {
+	//	gameIsViable := true
+	//	//for l, v := range gameData {
+	//	//	subgameIsViable := CheckIfGameIsPossible(cubesWeHave, gameData[i])
+	//	//	if subgameIsViable == false {
+	//	//		gameIsViable = false
+	//	//	}
+	//	//}
+	//	//if gameIsViable == true {
+	//	//	total += gameData[i].Id
+	//	//}
+	//}
+	return total
+}
+
+func checkIfSubGameIsViable(input string, substringLocation int, entries []string) bool {
 	cubesWeHave := Game{
 		Red:   12,
 		Green: 13,
 		Blue:  14,
 	}
 
-	for i := 0; i < len(gameData); i++ {
-		total += CheckIfGameIsPossible(cubesWeHave, gameData[i])
+	if clearString(input) == "blue" {
+		numOfBlue, _ := strconv.Atoi(entries[substringLocation-1])
+		if cubesWeHave.Blue > numOfBlue {
+			return false
+		}
 	}
-	return total
-}
-
-func CheckIfGameIsPossible(cubesWeHave Game, game Game) int {
-	if cubesWeHave.Red >= game.Red && cubesWeHave.Green >= game.Green && cubesWeHave.Blue >= cubesWeHave.Blue {
-		fmt.Println(game.Id)
-		return game.Id
+	if clearString(input) == "red" {
+		numOfRed, _ := strconv.Atoi(entries[substringLocation-1])
+		if cubesWeHave.Red > numOfRed {
+			return false
+		}
 	}
-	return 0
+	if clearString(input) == "green" {
+		numOfGreen, _ := strconv.Atoi(entries[substringLocation-1])
+		if cubesWeHave.Green > numOfGreen {
+			return false
+		}
+	}
+	return true
 }
