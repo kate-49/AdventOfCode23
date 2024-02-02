@@ -11,9 +11,9 @@ import (
 
 type Game struct {
 	Id    int
-	Blue  int
-	Red   int
-	Green int
+	Red   []int
+	Green []int
+	Blue  []int
 }
 
 func clearString(str string) string {
@@ -33,56 +33,39 @@ func CreateData() int {
 
 	_ = file.Close()
 
-	var kate [][]string
 	total := 0
 
-	type AllData struct {
-		AllGames []Game
-	}
-
-	type Game struct {
-		Id       int
-		Subgames [][]string
-	}
-	var k3 []Game
+	var AllGames []Game
 
 	for i, _ := range data {
-		subgame := []string{}
+		var IndividualGame Game
+
 		entries := strings.Split(data[i][1], " ")
 		gameId, _ := strconv.Atoi(clearString(entries[1]))
-
+		IndividualGame.Id = gameId
 		for w, v := range entries {
 			containsGreen, _ := regexp.MatchString("green", v)
 			containsBlue, _ := regexp.MatchString("blue", v)
 			containsRed, _ := regexp.MatchString("red", v)
 
-			if containsGreen || containsBlue || containsRed {
-				if w > 0 {
-					if w < len(entries) {
-						subgame = append(subgame, clearString(v), entries[w-1])
-					}
-				}
-				endOfSubGame, _ := regexp.MatchString(";", v)
-				if endOfSubGame == true {
-					kate = append(kate, subgame)
-					i++
-					subgame = []string{}
-				}
+			if containsGreen {
+				green, _ := strconv.Atoi(entries[w-1])
+				IndividualGame.Green = append(IndividualGame.Green, green)
+			}
+			if containsBlue {
+				blue, _ := strconv.Atoi(entries[w-1])
+				IndividualGame.Blue = append(IndividualGame.Blue, blue)
+			}
+			if containsRed {
+				red, _ := strconv.Atoi(entries[w-1])
+				IndividualGame.Red = append(IndividualGame.Red, red)
 			}
 		}
-		kate = append(kate, subgame)
-		fmt.Println("kate")
-		fmt.Println(kate)
-		k2 := Game{
-			Id:       gameId,
-			Subgames: kate,
-		}
-		fmt.Println("k2")
-		fmt.Println(k2)
-		k3 = append(k3, k2)
-		fmt.Println("k3")
-		fmt.Println(k3)
-		kate = [][]string{}
+		fmt.Println("IndividualGame")
+		fmt.Println(IndividualGame)
+		AllGames = append(AllGames, IndividualGame)
+		fmt.Println("AllGames")
+		fmt.Println(AllGames)
 	}
 
 	//for i, _ := range k2 {
