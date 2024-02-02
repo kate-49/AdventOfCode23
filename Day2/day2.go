@@ -2,7 +2,6 @@ package Day_2
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 	"regexp"
 	"strconv"
@@ -61,63 +60,34 @@ func CreateData() int {
 				IndividualGame.Red = append(IndividualGame.Red, red)
 			}
 		}
-		fmt.Println("IndividualGame")
-		fmt.Println(IndividualGame)
 		AllGames = append(AllGames, IndividualGame)
-		fmt.Println("AllGames")
-		fmt.Println(AllGames)
 	}
 
-	//for i, _ := range k2 {
-	//	game := Game{}
-	//	works := true
-	//	splitSubstrings := strings.Split(strings.Join(k2[i], " "), ";")
-	//	for _, o := range splitSubstrings {
-	//		word := strings.Split(o, " ")
-	//		fmt.Println("word")
-	//		fmt.Println(word)
-	//		for x, j := range word {
-	//			if j == "blue" {
-	//				valueOfBlue, _ := strconv.Atoi(word[x-1])
-	//				if valueOfBlue > 14 {
-	//					works = false
-	//					fmt.Println(i)
-	//					fmt.Println("changed to false")
-	//
-	//				}
-	//			}
-	//			if j == "red" {
-	//				valueOfRed, _ := strconv.Atoi(word[x-1])
-	//				if valueOfRed > 12 {
-	//					works = false
-	//					fmt.Println(i)
-	//					fmt.Println("changed to false")
-	//
-	//				}
-	//			}
-	//			if j == "green" {
-	//				valueOfGreen, _ := strconv.Atoi(word[x-1])
-	//				if valueOfGreen > 13 {
-	//					works = false
-	//					fmt.Println(i)
-	//					fmt.Println("changed to false")
-	//				}
-	//			}
-	//		}
-	//
-	//	}
-	//	if works == true {
-	//		total += i
-	//	}
-	//	row = append(row, game)
-	//}
+	for _, g := range AllGames {
+		works := true
+		for _, subgameValue := range g.Blue {
+			if subgameValue > 14 {
+				works = false
+			}
+		}
+		for _, subgameValue := range g.Red {
+			if subgameValue > 12 {
+				works = false
+			}
+		}
+		for _, subgameValue := range g.Green {
+			if subgameValue > 13 {
+				works = false
+			}
+		}
+		if works == true {
+			total += g.Id
+		}
+	}
 	return total
 }
 
 func Run() int {
 	gameData := CreateData()
-	fmt.Println(gameData)
-
-	total := 0
-	return total
+	return gameData
 }
