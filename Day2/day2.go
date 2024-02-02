@@ -20,7 +20,7 @@ func clearString(str string) string {
 	return nonAlphanumericRegex.ReplaceAllString(str, "")
 }
 
-func CreateData() int {
+func CreateData() [][]string {
 	var data [][]string
 	file, _ := os.Open("day2pt1input.txt")
 	scanner := bufio.NewScanner(file)
@@ -32,8 +32,10 @@ func CreateData() int {
 
 	_ = file.Close()
 
-	total := 0
+	return data
+}
 
+func BreakIntoSubgames(data [][]string) []Game {
 	var AllGames []Game
 
 	for i, _ := range data {
@@ -62,6 +64,11 @@ func CreateData() int {
 		}
 		AllGames = append(AllGames, IndividualGame)
 	}
+	return AllGames
+}
+
+func CalculateTotal(AllGames []Game) int {
+	total := 0
 
 	for _, g := range AllGames {
 		works := true
@@ -89,5 +96,6 @@ func CreateData() int {
 
 func Run() int {
 	gameData := CreateData()
-	return gameData
+	subgames := BreakIntoSubgames(gameData)
+	return CalculateTotal(subgames)
 }
