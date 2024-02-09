@@ -15,29 +15,43 @@ type RowElement struct {
 	numbersWithYIndex [][]int
 }
 
+func GetNumberOfDigitsPerRow(numbers []int) int {
+	kate := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(numbers)), ""), "[]")
+	return len(kate)
+}
+
 func CreateData() []RowElement {
 	var data []RowElement
 	file, _ := os.Open("day3input.txt")
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanWords)
 
-	i := 0
+	j := 0
 
 	for scanner.Scan() {
 		entries := scanner.Text()
 		numbers := getWholeNumbersFromRowInput(entries)
-		for _, num := range numbers {
+		numbersOfIndividualDigitsPerRow := GetNumberOfDigitsPerRow(numbers)
+		//this needs to be for the number of indiviual digits in numbers
+		fmt.Println("elements in row")
+		fmt.Println(numbersOfIndividualDigitsPerRow)
+
+		for i := 0; i < numbersOfIndividualDigitsPerRow; i++ {
+			fmt.Println("i")
+			fmt.Print(i)
 			element := RowElement{}
-			element.xCoord = i
-			element.wholeNumber = num
+			element.xCoord = j
+			element.wholeNumber = numbers[j]
 			element.rowAsStringArray = strings.Split(entries, "")
 			for d, h := range element.rowAsStringArray {
 				hAsInt, _ := strconv.Atoi(h)
-				element.numbersWithYIndex = append(element.numbersWithYIndex, []int{hAsInt, d, i})
+				if hAsInt != 0 {
+					element.numbersWithYIndex = append(element.numbersWithYIndex, []int{hAsInt, d, i})
+				}
 			}
 			data = append(data, element)
 		}
-		i++
+		j++
 	}
 
 	_ = file.Close()
@@ -74,7 +88,10 @@ func Run() []int {
 
 	fmt.Println("game data")
 	fmt.Println(gameData)
-	//for _, row := range gameData {
+	for _, row := range gameData {
+		fmt.Println(row.wholeNumber)
+		fmt.Println(row.numbersWithYIndex)
+	}
 	//get number location
 	//check row above and below
 	//check current row
