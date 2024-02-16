@@ -36,9 +36,21 @@ func CreateData() []RowElement {
 		var coord []int
 
 		for _, num := range numbers {
+			fmt.Println("num")
+			fmt.Println(num)
 			numberAsIntArray := strings.Split(strconv.Itoa(num), "")
-			for k, _ := range wholeRowAsStringArray {
+			fmt.Println("numberAsIntArray")
+			fmt.Println(numberAsIntArray)
+			//for k, _ := range wholeRowAsStringArray {
+			for k := 0; k < 140; k++ {
+
 				intLength := len(numberAsIntArray)
+				fmt.Println("intLength")
+				fmt.Println(intLength)
+				fmt.Println("k")
+				fmt.Println(k)
+				fmt.Println(wholeRowAsStringArray[k])
+				fmt.Println("post k")
 				if numberAsIntArray[0] == wholeRowAsStringArray[k] {
 					if intLength > 1 {
 						if numberAsIntArray[1] == wholeRowAsStringArray[k+1] {
@@ -88,7 +100,7 @@ func checkForDuplicateElements(existingCoordinatesForRow [][]int, coord []int) b
 }
 
 func checkIfContainsSymbol(input string) bool {
-	validCharacters := []string{"*", "$", "#", "+"}
+	validCharacters := []string{"*", "$", "#", "+", "@", "/", "%", "=", "-", "_", "&"}
 
 	for _, el := range validCharacters {
 		if el == input {
@@ -135,19 +147,23 @@ func Run() int {
 func CheckCoordinate(coordinates []int, gameData []RowElement) int {
 	startCoordinate := []int{coordinates[1], coordinates[2]}
 	endCoordinate := []int{coordinates[3], coordinates[4]}
+	lengthOfLine := len(gameData[0].stringRow)
+	fmt.Println(lengthOfLine)
 
 	//check element to the left if element is not 0
 	if startCoordinate[0] > 0 {
 		leftStartElement := startCoordinate[0] - 1
 		if (checkIfContainsSymbol(gameData[startCoordinate[1]].stringRow[leftStartElement])) == true {
+			fmt.Println("left")
 			return coordinates[0]
 		}
 	}
 
 	//check element to the right of last element
-	if startCoordinate[0] < 9 {
+	if startCoordinate[0] < lengthOfLine {
 		rightEndElement := endCoordinate[0] + 1
 		if (checkIfContainsSymbol(gameData[endCoordinate[1]].stringRow[rightEndElement])) == true {
+			fmt.Println("right")
 			return coordinates[0]
 		}
 	}
@@ -157,6 +173,7 @@ func CheckCoordinate(coordinates []int, gameData []RowElement) int {
 		//check element above start element
 		yCoordForRowAbove := startCoordinate[1] - 1
 		if (checkIfContainsSymbol(gameData[yCoordForRowAbove].stringRow[startCoordinate[0]])) == true {
+			fmt.Println("above first")
 			return coordinates[0]
 		}
 
@@ -164,12 +181,14 @@ func CheckCoordinate(coordinates []int, gameData []RowElement) int {
 			//check element above middle element
 			midCoordinate := startCoordinate[0] + 1
 			if (checkIfContainsSymbol(gameData[yCoordForRowAbove].stringRow[midCoordinate])) == true {
+				fmt.Println("above mid")
 				return coordinates[0]
 			}
 		}
 
 		//check element above last element
 		if (checkIfContainsSymbol(gameData[yCoordForRowAbove].stringRow[endCoordinate[0]])) == true {
+			fmt.Println("above last")
 			return coordinates[0]
 		}
 
@@ -177,6 +196,7 @@ func CheckCoordinate(coordinates []int, gameData []RowElement) int {
 			//check element above and one to left of start element
 			newXElement := startCoordinate[0] - 1
 			if (checkIfContainsSymbol(gameData[yCoordForRowAbove].stringRow[newXElement])) == true {
+				fmt.Println("above left of first")
 				return coordinates[0]
 			}
 		}
@@ -184,23 +204,25 @@ func CheckCoordinate(coordinates []int, gameData []RowElement) int {
 		newXElement := startCoordinate[0] + 1
 		//check element above and one to right of start element
 		if (checkIfContainsSymbol(gameData[yCoordForRowAbove].stringRow[newXElement])) == true {
+			fmt.Println("above right of first")
 			return coordinates[0]
 		}
 
 		newXElement = endCoordinate[0] - 1
 		//check element above and one to left of end element
 		if (checkIfContainsSymbol(gameData[yCoordForRowAbove].stringRow[endCoordinate[0]])) == true {
+			fmt.Println("above left of end")
 			return coordinates[0]
 		}
 
-		if startCoordinate[0] < 9 {
+		if startCoordinate[0] < lengthOfLine {
 			newXElement = endCoordinate[0] + 1
 			//check element above and one to right of end element
 			if (checkIfContainsSymbol(gameData[yCoordForRowAbove].stringRow[newXElement])) == true {
+				fmt.Println("above right of end")
 				return coordinates[0]
 			}
 		}
-		newXElement = endCoordinate[0] + 1
 
 	}
 
@@ -209,6 +231,7 @@ func CheckCoordinate(coordinates []int, gameData []RowElement) int {
 		//check element below start element
 		yCoordForRowBelow := startCoordinate[1] + 1
 		if (checkIfContainsSymbol(gameData[yCoordForRowBelow].stringRow[startCoordinate[0]])) == true {
+			fmt.Println("below start")
 			return coordinates[0]
 		}
 
@@ -216,19 +239,22 @@ func CheckCoordinate(coordinates []int, gameData []RowElement) int {
 			//check element below middle element
 			midCoordinate := startCoordinate[0] + 1
 			if (checkIfContainsSymbol(gameData[yCoordForRowBelow].stringRow[midCoordinate])) == true {
+				fmt.Println("below mid")
 				return coordinates[0]
 			}
 		}
 
 		//check element below last element
 		if (checkIfContainsSymbol(gameData[yCoordForRowBelow].stringRow[endCoordinate[1]])) == true {
+			fmt.Println("below last")
 			return coordinates[0]
 		}
 
 		if startCoordinate[0] > 0 {
-			//check element above and one to left of start element
+			//check element below and one to left of start element
 			newXElement := startCoordinate[0] - 1
 			if (checkIfContainsSymbol(gameData[yCoordForRowBelow].stringRow[newXElement])) == true {
+				fmt.Println("below left of first")
 				return coordinates[0]
 			}
 		}
@@ -236,23 +262,25 @@ func CheckCoordinate(coordinates []int, gameData []RowElement) int {
 		newXElement := startCoordinate[0] + 1
 		//check element above and one to right of start element
 		if (checkIfContainsSymbol(gameData[yCoordForRowBelow].stringRow[newXElement])) == true {
+			fmt.Println("below right of first")
 			return coordinates[0]
 		}
 
 		newXElement = endCoordinate[0] - 1
 		//check element above and one to left of end element
 		if (checkIfContainsSymbol(gameData[yCoordForRowBelow].stringRow[endCoordinate[0]])) == true {
+			fmt.Println("below left of end")
 			return coordinates[0]
 		}
 
-		if startCoordinate[0] < 9 {
+		if startCoordinate[0] < lengthOfLine {
 			newXElement = endCoordinate[0] + 1
 			//check element above and one to right of end element
 			if (checkIfContainsSymbol(gameData[yCoordForRowBelow].stringRow[newXElement])) == true {
+				fmt.Println("below right of end")
 				return coordinates[0]
 			}
 		}
-		newXElement = endCoordinate[0] + 1
 	}
 
 	return 0
