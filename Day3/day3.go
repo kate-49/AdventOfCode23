@@ -43,10 +43,15 @@ func CreateData() []RowElement {
 						if numberAsIntArray[1] == wholeRowAsStringArray[k+1] {
 							if intLength > 2 {
 								if numberAsIntArray[2] == wholeRowAsStringArray[k+2] {
-									coord = []int{num, rowNumber, k, rowNumber, k + 2}
+									fmt.Println("adding coord p2")
+									coord = []int{num, k, rowNumber, k + 2, rowNumber}
+									fmt.Println(coord)
 								}
 							} else {
-								coord = []int{num, rowNumber, k, rowNumber, k + 1}
+								fmt.Println("adding coord p1")
+								coord = []int{num, k, rowNumber, k + 1, rowNumber}
+								fmt.Println(coord)
+
 							}
 						}
 					}
@@ -144,54 +149,47 @@ func CheckCoordinate(coordinates []int, gameData []RowElement) bool {
 	//		return true
 	//	}
 	//}
-
-	////check we're not on row 0
-	//if startCoordinate[1] != 0 {
-	//	//check element above first element
-	//
-	//	aboveStartElement := startCoordinate[1] - 1
-	//	fmt.Println("above start")
-	//	fmt.Println(startCoordinate[0])
-	//	fmt.Println(aboveStartElement)
-	//	fmt.Println(gameData[startCoordinate[0]].stringRow[aboveStartElement])
-	//	if (gameData[startCoordinate[0]].stringRow[aboveStartElement]) == "*" {
-	//		return true
-	//	}
-	//	//check element above middle element
-	//	//if (gameData[startCoordinate[0]].stringRow[aboveStartElement]) == "*" {
-	//	//	return true
-	//	//}
-	//	//check element above last element
-	//	aboveEndElement := endCoordinate[1] - 1
-	//	fmt.Println("above end")
-	//	fmt.Println(endCoordinate[0])
-	//	fmt.Println(aboveEndElement)
-	//	fmt.Println(gameData[endCoordinate[0]].stringRow[aboveEndElement])
-	//	if (gameData[endCoordinate[0]].stringRow[aboveEndElement]) == "*" {
-	//		return true
-	//	}
-	//
-	//}
-
-	//check we're not on final row
-	if startCoordinate[1] < len(gameData)-1 {
-		//check element below start element
-		belowStartElement := startCoordinate[1] + 1
-		if (gameData[belowStartElement].stringRow[startCoordinate[0]]) == "*" {
+	//check we're not on row 0
+	if startCoordinate[1] != 0 {
+		//check element above start element
+		yCoordForRowAbove := startCoordinate[1] - 1
+		if (gameData[yCoordForRowAbove].stringRow[startCoordinate[0]]) == "*" {
 			return true
 		}
 
 		if (coordinates[4] - coordinates[2]) > 1 {
 			//check element above middle element
 			midCoordinate := startCoordinate[0] + 1
-			if (gameData[belowStartElement].stringRow[midCoordinate]) == "*" {
+			if (gameData[yCoordForRowAbove].stringRow[midCoordinate]) == "*" {
+				return true
+			}
+		}
+
+		//check element above last element
+		if (gameData[yCoordForRowAbove].stringRow[endCoordinate[1]]) == "*" {
+			return true
+		}
+
+	}
+
+	//check we're not on final row
+	if startCoordinate[1] < len(gameData)-1 {
+		//check element below start element
+		yCoordForRowBelow := startCoordinate[1] + 1
+		if (gameData[yCoordForRowBelow].stringRow[startCoordinate[0]]) == "*" {
+			return true
+		}
+
+		if (coordinates[4] - coordinates[2]) > 1 {
+			//check element below middle element
+			midCoordinate := startCoordinate[0] + 1
+			if (gameData[yCoordForRowBelow].stringRow[midCoordinate]) == "*" {
 				return true
 			}
 		}
 
 		//check element below last element
-		belowEndElement := endCoordinate[0] + 1
-		if (gameData[belowEndElement].stringRow[endCoordinate[1]]) == "*" {
+		if (gameData[yCoordForRowBelow].stringRow[endCoordinate[1]]) == "*" {
 			return true
 		}
 	}
