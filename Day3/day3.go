@@ -9,7 +9,8 @@ import (
 )
 
 type RowElement struct {
-	xCoord            int
+	startCoordinates  []int
+	endCoordinates    []int
 	wholeNumber       int
 	rowAsStringArray  []string
 	numbersWithYIndex [][]int
@@ -26,35 +27,63 @@ func CreateData() []RowElement {
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanWords)
 
-	j := 0
-
 	for scanner.Scan() {
 		entries := scanner.Text()
+		rowNumber := 0
 		numbers := getWholeNumbersFromRowInput(entries)
-		numbersOfIndividualDigitsPerRow := GetNumberOfDigitsPerRow(numbers)
-		//this needs to be for the number of indiviual digits in numbers
-		fmt.Println("elements in row")
-		fmt.Println(numbersOfIndividualDigitsPerRow)
+		wholeRowAsStringArray := strings.Split(entries, "")
+		//change this so get the first whole number then loop over the string array to see where it matches, check the following elements match and if so add coordinates
 
-		for i := 0; i < numbersOfIndividualDigitsPerRow; i++ {
-			fmt.Println("i")
-			fmt.Print(i)
-			element := RowElement{}
-			element.xCoord = j
-			element.wholeNumber = numbers[j]
-			element.rowAsStringArray = strings.Split(entries, "")
-			for d, h := range element.rowAsStringArray {
-				hAsInt, _ := strconv.Atoi(h)
-				if hAsInt != 0 {
-					element.numbersWithYIndex = append(element.numbersWithYIndex, []int{hAsInt, d, i})
+		element := RowElement{}
+		var coord []int
+
+		for _, num := range numbers {
+			numberAsIntArray := strings.Split(strconv.Itoa(num), "")
+			for k, _ := range wholeRowAsStringArray {
+				fmt.Println("element")
+				fmt.Println(wholeRowAsStringArray[k])
+				fmt.Println(numberAsIntArray)
+				intLength := len(numberAsIntArray)
+				fmt.Println("k")
+				fmt.Println(k)
+
+				if numberAsIntArray[0] == wholeRowAsStringArray[k] {
+					if intLength > 1 {
+						if numberAsIntArray[1] == wholeRowAsStringArray[k+1] {
+							fmt.Println("match 1")
+							fmt.Println(numberAsIntArray[1])
+							fmt.Println(wholeRowAsStringArray[k+1])
+							if intLength > 2 {
+								fmt.Println("if")
+								if numberAsIntArray[2] == wholeRowAsStringArray[k+2] {
+									fmt.Println("match 2")
+									fmt.Println(numberAsIntArray[2])
+									fmt.Println(wholeRowAsStringArray[k+2])
+									coord = []int{num, rowNumber, k, rowNumber, k + 2}
+								}
+							} else {
+								coord = []int{num, rowNumber, k, rowNumber, k + 1}
+							}
+						}
+					}
 				}
+				if len(coord) > 1 {
+					fmt.Println("coord")
+					fmt.Println(coord)
+					element.startCoordinates = []int{coord[1], coord[2]}
+					element.endCoordinates = []int{coord[3], coord[4]}
+				}
+				//element.rowAsStringArray = strings.Split(entries, "")
+				data = append(data, element)
 			}
-			data = append(data, element)
 		}
-		j++
+		rowNumber++
+		fmt.Println("row num")
+		fmt.Println(rowNumber)
 	}
 
 	_ = file.Close()
+	fmt.Println("close file")
 	return data
 }
 
@@ -83,16 +112,25 @@ func contains(s []string, str string) bool {
 
 func Run() []int {
 	partNumbers := []int{}
-
 	gameData := CreateData()
-
-	fmt.Println("game data")
+	fmt.Println("gd")
 	fmt.Println(gameData)
-	for _, row := range gameData {
-		fmt.Println(row.wholeNumber)
-		fmt.Println(row.numbersWithYIndex)
-	}
-	//get number location
+	//var matchingRows []RowElement
+
+	//for p, row := range gameData {
+	//	fmt.Println("p")
+	//	fmt.Println(gameData[p])
+	//	fmt.Println("row")
+	//	fmt.Println(row)
+	//	//for k := 0; k < len(row.numbersWithYIndex); k++ {
+	//	//	fmt.Println("el")
+	//	//	fmt.Println(row.numbersWithYIndex[k])
+	//	//	//if el[0] == 1 {
+	//	//	//	matchingRows = append(matchingRows, row)
+	//	//	//}
+	//	//}
+	//}
+	////get number location
 	//check row above and below
 	//check current row
 	//k2 := []Kate{}
@@ -133,20 +171,20 @@ func CheckCoordinate(coordinates []int, gameData [][]string, validLetters []stri
 	x := coordinates[0]
 	y := coordinates[1]
 	fmt.Println(gameData[x][y])
-	if x > 0 && x+1 < len(gameData[x]) {
-		if (gameData[x+1][y] != ".") && (!contains(validLetters, gameData[x+1][y])) {
-			fmt.Println("true")
-			fmt.Println(gameData[x][y])
-			partNumber = true
-		}
-	}
-	if x-1 > 0 {
-		if (gameData[x-1][y] != ".") && (!contains(validLetters, gameData[x-1][y])) {
-			fmt.Println("true")
-			fmt.Println(gameData[x][y])
-			partNumber = true
-		}
-	}
+	//if x > 0 && x+1 < len(gameData[x]) {
+	//	if (gameData[x+1][y] != ".") && (!contains(validLetters, gameData[x+1][y])) {
+	//		fmt.Println("true")
+	//		fmt.Println(gameData[x][y])
+	//		partNumber = true
+	//	}
+	//}
+	//if x-1 > 0 {
+	//	if (gameData[x-1][y] != ".") && (!contains(validLetters, gameData[x-1][y])) {
+	//		fmt.Println("true")
+	//		fmt.Println(gameData[x][y])
+	//		partNumber = true
+	//	}
+	//}
 	fmt.Println("----")
 	return partNumber
 }
