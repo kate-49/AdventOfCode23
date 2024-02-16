@@ -26,10 +26,11 @@ func CreateData() []RowElement {
 	file, _ := os.Open("day3input.txt")
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanWords)
+	rowNumber := 0
 
 	for scanner.Scan() {
 		entries := scanner.Text()
-		rowNumber := 0
+
 		numbers := getWholeNumbersFromRowInput(entries)
 		wholeRowAsStringArray := strings.Split(entries, "")
 		//change this so get the first whole number then loop over the string array to see where it matches, check the following elements match and if so add coordinates
