@@ -11,11 +11,7 @@ import (
 type RowElement struct {
 	perRowCoordinates [][]int
 	numbers           []int
-}
-
-func GetNumberOfDigitsPerRow(numbers []int) int {
-	kate := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(numbers)), ""), "[]")
-	return len(kate)
+	stringRow         []string
 }
 
 func CreateData() []RowElement {
@@ -33,7 +29,8 @@ func CreateData() []RowElement {
 		//change this so get the first whole number then loop over the string array to see where it matches, check the following elements match and if so add coordinates
 
 		element := RowElement{
-			numbers: numbers,
+			numbers:   numbers,
+			stringRow: wholeRowAsStringArray,
 		}
 		var coord []int
 
@@ -64,9 +61,8 @@ func CreateData() []RowElement {
 
 			}
 		}
-		if len(element.numbers) >= 1 {
-			data = append(data, element)
-		}
+		data = append(data, element)
+
 		rowNumber++
 	}
 
@@ -110,76 +106,108 @@ func contains(s []string, str string) bool {
 func Run() []int {
 	partNumbers := []int{}
 	gameData := CreateData()
+	fmt.Println("gd")
+	fmt.Println(gameData[0])
+	fmt.Println(gameData[1])
 
-	for p, row := range gameData {
-		fmt.Println("p")
-		fmt.Println(p)
-		fmt.Println("row")
-		fmt.Println(row)
+	for _, row := range gameData {
+		for _, eachNumber := range row.perRowCoordinates {
+			isValid := CheckCoordinate(eachNumber, gameData)
+			if isValid {
+				fmt.Println("valid")
+				fmt.Println(isValid)
+			}
+		}
 	}
-	//	//for k := 0; k < len(row.numbersWithYIndex); k++ {
-	//	//	fmt.Println("el")
-	//	//	fmt.Println(row.numbersWithYIndex[k])
-	//	//	//if el[0] == 1 {
-	//	//	//	matchingRows = append(matchingRows, row)
-	//	//	//}
-	//	//}
-	//}
-	////get number location
-	//check row above and below
-	//check current row
-	//k2 := []Kate{}
-	//kate := Kate{}
-	//
-	//for elementIndex, element := range row {
-	//	//group numbers together
-	//	//joined := strings.Join(row, "")
-	//	//numbers := strings.Split(joined, ".")
-	//	//
-	//	//for _, NumElement := range numbers {
-	//	//	fmt.Println("NumElement")
-	//	//	fmt.Println(NumElement)
-	//	//	if contains(validLetters, NumElement) {
-	//	//		kate.wholeNumber = NumElement
-	//	//		fmt.Println("elementIndex")
-	//	//		fmt.Println(elementIndex)
-	//	//		fmt.Println("el")
-	//	//		fmt.Println(element)
-	//	//	}
-	//	//}
-	//
-	//	//if contains(validLetters, element) {
-	//	//	isPartNumber := CheckCoordinate([]int{index, elementIndex}, gameData, validLetters)
-	//	//	if isPartNumber {
-	//	//		intValue := getRealValue(element, numbers)
-	//	//		partNumbers = append(partNumbers, intValue)
-	//	//	}
-	//	//}
-	//
-	//}
-	//}
 	return partNumbers
 }
 
-func CheckCoordinate(coordinates []int, gameData [][]string, validLetters []string) bool {
-	partNumber := false
-	x := coordinates[0]
-	y := coordinates[1]
-	fmt.Println(gameData[x][y])
-	//if x > 0 && x+1 < len(gameData[x]) {
-	//	if (gameData[x+1][y] != ".") && (!contains(validLetters, gameData[x+1][y])) {
-	//		fmt.Println("true")
-	//		fmt.Println(gameData[x][y])
-	//		partNumber = true
+func CheckCoordinate(coordinates []int, gameData []RowElement) bool {
+	fmt.Println("coord")
+	fmt.Println(coordinates)
+	startCoordinate := []int{coordinates[1], coordinates[2]}
+	endCoordinate := []int{coordinates[3], coordinates[4]}
+	fmt.Println("start")
+	fmt.Println(startCoordinate)
+	fmt.Println("end")
+	fmt.Println(endCoordinate)
+
+	////check element to the left if element is not 0
+	//
+	//if startCoordinate[0] != 0 {
+	//	leftStartElement := startCoordinate[0] - 1
+	//	fmt.Println("left")
+	//	fmt.Println(leftStartElement)
+	//	fmt.Println(startCoordinate[1])
+	//	fmt.Println(gameData[1].stringRow)
+	//	if (gameData[leftStartElement].stringRow[startCoordinate[1]]) == "*" {
+	//		return true
 	//	}
 	//}
-	//if x-1 > 0 {
-	//	if (gameData[x-1][y] != ".") && (!contains(validLetters, gameData[x-1][y])) {
-	//		fmt.Println("true")
-	//		fmt.Println(gameData[x][y])
-	//		partNumber = true
+
+	////check we're not on row 0
+	//if startCoordinate[1] != 0 {
+	//	//check element above first element
+	//
+	//	aboveStartElement := startCoordinate[1] - 1
+	//	fmt.Println("above start")
+	//	fmt.Println(startCoordinate[0])
+	//	fmt.Println(aboveStartElement)
+	//	fmt.Println(gameData[startCoordinate[0]].stringRow[aboveStartElement])
+	//	if (gameData[startCoordinate[0]].stringRow[aboveStartElement]) == "*" {
+	//		return true
+	//	}
+	//	//check element above middle element
+	//	//if (gameData[startCoordinate[0]].stringRow[aboveStartElement]) == "*" {
+	//	//	return true
+	//	//}
+	//	//check element above last element
+	//	aboveEndElement := endCoordinate[1] - 1
+	//	fmt.Println("above end")
+	//	fmt.Println(endCoordinate[0])
+	//	fmt.Println(aboveEndElement)
+	//	fmt.Println(gameData[endCoordinate[0]].stringRow[aboveEndElement])
+	//	if (gameData[endCoordinate[0]].stringRow[aboveEndElement]) == "*" {
+	//		return true
+	//	}
+	//
+	//}
+
+	//check we're not on final row
+	if startCoordinate[1] < len(gameData)-1 {
+		//check element below start element
+		belowStartElement := startCoordinate[1] + 1
+		if (gameData[belowStartElement].stringRow[startCoordinate[0]]) == "*" {
+			return true
+		}
+
+		if (coordinates[4] - coordinates[2]) > 1 {
+			//check element above middle element
+			midCoordinate := startCoordinate[0] + 1
+			if (gameData[belowStartElement].stringRow[midCoordinate]) == "*" {
+				return true
+			}
+		}
+
+		//check element below last element
+		belowEndElement := endCoordinate[0] + 1
+		if (gameData[belowEndElement].stringRow[endCoordinate[1]]) == "*" {
+			return true
+		}
+	}
+
+	////check we're not on final element in array
+	////check element to the right of last element
+	//if startCoordinate[0] < 9 {
+	//	rightEndElement := startCoordinate[0] + 1
+	//	fmt.Println("right")
+	//	fmt.Println(endCoordinate[0])
+	//	fmt.Println(rightEndElement)
+	//	fmt.Println(gameData[endCoordinate[0]].stringRow[rightEndElement])
+	//	if (gameData[endCoordinate[0]].stringRow[rightEndElement]) == "*" {
+	//		return true
 	//	}
 	//}
-	fmt.Println("----")
-	return partNumber
+
+	return false
 }
