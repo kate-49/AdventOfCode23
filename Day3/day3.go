@@ -98,36 +98,24 @@ func getWholeNumbersFromRowInput(input string) []int {
 	return finalElements
 }
 
-func contains(s []string, str string) bool {
-	for _, v := range s {
-		if v == str {
-			return true
-		}
-	}
-
-	return false
-}
-
-func Run() []int {
-	partNumbers := []int{}
+func Run() int {
 	gameData := CreateData()
-	fmt.Println("gd")
-	fmt.Println(gameData[0])
-	fmt.Println(gameData[1])
+	total := 0
 
 	for _, row := range gameData {
 		for _, eachNumber := range row.perRowCoordinates {
 			isValid := CheckCoordinate(eachNumber, gameData)
-			if isValid {
+			if isValid > 0 {
 				fmt.Println("valid")
 				fmt.Println(isValid)
+				total += isValid
 			}
 		}
 	}
-	return partNumbers
+	return total
 }
 
-func CheckCoordinate(coordinates []int, gameData []RowElement) bool {
+func CheckCoordinate(coordinates []int, gameData []RowElement) int {
 	fmt.Println("coord")
 	fmt.Println(coordinates)
 	startCoordinate := []int{coordinates[1], coordinates[2]}
@@ -146,28 +134,35 @@ func CheckCoordinate(coordinates []int, gameData []RowElement) bool {
 	//	fmt.Println(startCoordinate[1])
 	//	fmt.Println(gameData[1].stringRow)
 	//	if (gameData[leftStartElement].stringRow[startCoordinate[1]]) == "*" {
-	//		return true
+	//		return coordinates[0]
 	//	}
 	//}
 	//check we're not on row 0
 	if startCoordinate[1] != 0 {
+		fmt.Println("ABOVE")
 		//check element above start element
 		yCoordForRowAbove := startCoordinate[1] - 1
 		if (gameData[yCoordForRowAbove].stringRow[startCoordinate[0]]) == "*" {
-			return true
+			fmt.Println("a")
+
+			return coordinates[0]
 		}
 
 		if (coordinates[4] - coordinates[2]) > 1 {
 			//check element above middle element
 			midCoordinate := startCoordinate[0] + 1
 			if (gameData[yCoordForRowAbove].stringRow[midCoordinate]) == "*" {
-				return true
+				fmt.Println("a")
+
+				return coordinates[0]
 			}
 		}
 
 		//check element above last element
-		if (gameData[yCoordForRowAbove].stringRow[endCoordinate[1]]) == "*" {
-			return true
+		if (gameData[yCoordForRowAbove].stringRow[endCoordinate[0]]) == "*" {
+			fmt.Println("a")
+
+			return coordinates[0]
 		}
 
 	}
@@ -177,20 +172,20 @@ func CheckCoordinate(coordinates []int, gameData []RowElement) bool {
 		//check element below start element
 		yCoordForRowBelow := startCoordinate[1] + 1
 		if (gameData[yCoordForRowBelow].stringRow[startCoordinate[0]]) == "*" {
-			return true
+			return coordinates[0]
 		}
 
 		if (coordinates[4] - coordinates[2]) > 1 {
 			//check element below middle element
 			midCoordinate := startCoordinate[0] + 1
 			if (gameData[yCoordForRowBelow].stringRow[midCoordinate]) == "*" {
-				return true
+				return coordinates[0]
 			}
 		}
 
 		//check element below last element
 		if (gameData[yCoordForRowBelow].stringRow[endCoordinate[1]]) == "*" {
-			return true
+			return coordinates[0]
 		}
 	}
 
@@ -203,9 +198,9 @@ func CheckCoordinate(coordinates []int, gameData []RowElement) bool {
 	//	fmt.Println(rightEndElement)
 	//	fmt.Println(gameData[endCoordinate[0]].stringRow[rightEndElement])
 	//	if (gameData[endCoordinate[0]].stringRow[rightEndElement]) == "*" {
-	//		return true
+	//		return coordinates[0]
 	//	}
 	//}
 
-	return false
+	return 0
 }
