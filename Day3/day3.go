@@ -9,8 +9,7 @@ import (
 )
 
 type RowElement struct {
-	startCoordinates  []int
-	endCoordinates    []int
+	perRowCoordinates [][]int
 	wholeNumber       int
 	rowAsStringArray  []string
 	numbersWithYIndex [][]int
@@ -41,25 +40,12 @@ func CreateData() []RowElement {
 		for _, num := range numbers {
 			numberAsIntArray := strings.Split(strconv.Itoa(num), "")
 			for k, _ := range wholeRowAsStringArray {
-				fmt.Println("element")
-				fmt.Println(wholeRowAsStringArray[k])
-				fmt.Println(numberAsIntArray)
 				intLength := len(numberAsIntArray)
-				fmt.Println("k")
-				fmt.Println(k)
-
 				if numberAsIntArray[0] == wholeRowAsStringArray[k] {
 					if intLength > 1 {
 						if numberAsIntArray[1] == wholeRowAsStringArray[k+1] {
-							fmt.Println("match 1")
-							fmt.Println(numberAsIntArray[1])
-							fmt.Println(wholeRowAsStringArray[k+1])
 							if intLength > 2 {
-								fmt.Println("if")
 								if numberAsIntArray[2] == wholeRowAsStringArray[k+2] {
-									fmt.Println("match 2")
-									fmt.Println(numberAsIntArray[2])
-									fmt.Println(wholeRowAsStringArray[k+2])
 									coord = []int{num, rowNumber, k, rowNumber, k + 2}
 								}
 							} else {
@@ -71,21 +57,35 @@ func CreateData() []RowElement {
 				if len(coord) > 1 {
 					fmt.Println("coord")
 					fmt.Println(coord)
-					element.startCoordinates = []int{coord[1], coord[2]}
-					element.endCoordinates = []int{coord[3], coord[4]}
+					//check if contains element before appending
+					alreadySaved := checkForDuplicateElements(element.perRowCoordinates, coord)
+					if !alreadySaved {
+						fmt.Println("appending")
+						fmt.Println(element.perRowCoordinates)
+						element.perRowCoordinates = append(element.perRowCoordinates, coord)
+					}
 				}
 				//element.rowAsStringArray = strings.Split(entries, "")
-				data = append(data, element)
+
 			}
 		}
+		fmt.Println(len(data))
+		data = append(data, element)
 		rowNumber++
-		fmt.Println("row num")
-		fmt.Println(rowNumber)
 	}
 
 	_ = file.Close()
 	fmt.Println("close file")
 	return data
+}
+
+func checkForDuplicateElements(existingCoordinatesForRow [][]int, coord []int) bool {
+	for _, el := range existingCoordinatesForRow {
+		if (el[0] == coord[0]) && (el[1] == coord[1]) && (el[2] == coord[2]) {
+			return true
+		}
+	}
+	return false
 }
 
 func getWholeNumbersFromRowInput(input string) []int {
@@ -114,15 +114,13 @@ func contains(s []string, str string) bool {
 func Run() []int {
 	partNumbers := []int{}
 	gameData := CreateData()
-	fmt.Println("gd")
 	fmt.Println(gameData)
-	//var matchingRows []RowElement
-
 	//for p, row := range gameData {
 	//	fmt.Println("p")
 	//	fmt.Println(gameData[p])
 	//	fmt.Println("row")
 	//	fmt.Println(row)
+	//}
 	//	//for k := 0; k < len(row.numbersWithYIndex); k++ {
 	//	//	fmt.Println("el")
 	//	//	fmt.Println(row.numbersWithYIndex[k])
