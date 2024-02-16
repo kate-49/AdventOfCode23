@@ -6,7 +6,7 @@ import (
 )
 
 func TestPart1(t *testing.T) {
-	assert.Equal(t, 4631, Run())
+	assert.Equal(t, 4361, Run())
 }
 
 //func TestPart2(t *testing.T) {
