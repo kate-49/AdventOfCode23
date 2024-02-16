@@ -10,9 +10,7 @@ import (
 
 type RowElement struct {
 	perRowCoordinates [][]int
-	wholeNumber       int
-	rowAsStringArray  []string
-	numbersWithYIndex [][]int
+	numbers           []int
 }
 
 func GetNumberOfDigitsPerRow(numbers []int) int {
@@ -34,7 +32,9 @@ func CreateData() []RowElement {
 		wholeRowAsStringArray := strings.Split(entries, "")
 		//change this so get the first whole number then loop over the string array to see where it matches, check the following elements match and if so add coordinates
 
-		element := RowElement{}
+		element := RowElement{
+			numbers: numbers,
+		}
 		var coord []int
 
 		for _, num := range numbers {
@@ -55,22 +55,18 @@ func CreateData() []RowElement {
 					}
 				}
 				if len(coord) > 1 {
-					fmt.Println("coord")
-					fmt.Println(coord)
 					//check if contains element before appending
 					alreadySaved := checkForDuplicateElements(element.perRowCoordinates, coord)
 					if !alreadySaved {
-						fmt.Println("appending")
-						fmt.Println(element.perRowCoordinates)
 						element.perRowCoordinates = append(element.perRowCoordinates, coord)
 					}
 				}
-				//element.rowAsStringArray = strings.Split(entries, "")
 
 			}
 		}
-		fmt.Println(len(data))
-		data = append(data, element)
+		if len(element.numbers) >= 1 {
+			data = append(data, element)
+		}
 		rowNumber++
 	}
 
@@ -114,13 +110,13 @@ func contains(s []string, str string) bool {
 func Run() []int {
 	partNumbers := []int{}
 	gameData := CreateData()
-	fmt.Println(gameData)
-	//for p, row := range gameData {
-	//	fmt.Println("p")
-	//	fmt.Println(gameData[p])
-	//	fmt.Println("row")
-	//	fmt.Println(row)
-	//}
+
+	for p, row := range gameData {
+		fmt.Println("p")
+		fmt.Println(p)
+		fmt.Println("row")
+		fmt.Println(row)
+	}
 	//	//for k := 0; k < len(row.numbersWithYIndex); k++ {
 	//	//	fmt.Println("el")
 	//	//	fmt.Println(row.numbersWithYIndex[k])
