@@ -17,7 +17,7 @@ type RowElement struct {
 
 func CreateData() []RowElement {
 	var data []RowElement
-	file, _ := os.Open("day3input.txt")
+	file, _ := os.Open("day3input1.txt")
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanWords)
 	rowNumber := 0
@@ -42,32 +42,33 @@ func CreateData() []RowElement {
 			fmt.Println("numberAsIntArray")
 			fmt.Println(numberAsIntArray)
 			//for k, _ := range wholeRowAsStringArray {
-			for k := 0; k < 140; k++ {
+			//runs through this per number in the numbers as int array
+			for k := 0; k <= 139; k++ {
 
 				intLength := len(numberAsIntArray)
-				fmt.Println("intLength")
-				fmt.Println(intLength)
-				fmt.Println("k")
-				fmt.Println(k)
-				fmt.Println(wholeRowAsStringArray[k])
-				fmt.Println("post k")
+				//if this goes above 136 it times out but should go to 139?
 				if numberAsIntArray[0] == wholeRowAsStringArray[k] {
 					if intLength > 1 {
+						//maybe debug here
 						if numberAsIntArray[1] == wholeRowAsStringArray[k+1] {
 							if intLength > 2 {
 								fmt.Println(num)
 								if numberAsIntArray[2] == wholeRowAsStringArray[k+2] {
-									fmt.Println("adding coord p2")
+									fmt.Println("adding coord p3")
 									coord = []int{num, k, rowNumber, k + 2, rowNumber}
 									fmt.Println(coord)
 								}
 							} else {
-								fmt.Println("adding coord p1")
+								fmt.Println("adding coord p2")
 								coord = []int{num, k, rowNumber, k + 1, rowNumber}
 								fmt.Println(coord)
 
 							}
 						}
+					} else {
+						fmt.Println("adding coord p1")
+						coord = []int{num, k, rowNumber, k, rowNumber}
+						fmt.Println(coord)
 					}
 				}
 				if len(coord) > 1 {
@@ -77,7 +78,7 @@ func CreateData() []RowElement {
 						element.perRowCoordinates = append(element.perRowCoordinates, coord)
 					}
 				}
-
+				//}
 			}
 		}
 		data = append(data, element)
@@ -91,8 +92,10 @@ func CreateData() []RowElement {
 }
 
 func checkForDuplicateElements(existingCoordinatesForRow [][]int, coord []int) bool {
+	fmt.Println("existing coordinates")
+	fmt.Println(existingCoordinatesForRow)
 	for _, el := range existingCoordinatesForRow {
-		if (el[0] == coord[0]) && (el[1] == coord[1]) && (el[2] == coord[2]) {
+		if (el[0] == coord[0]) && (el[1] == coord[1]) && (el[2] == coord[2]) && (el[3] == coord[3]) {
 			return true
 		}
 	}
@@ -100,7 +103,7 @@ func checkForDuplicateElements(existingCoordinatesForRow [][]int, coord []int) b
 }
 
 func checkIfContainsSymbol(input string) bool {
-	validCharacters := []string{"*", "$", "#", "+", "@", "/", "%", "=", "-", "_", "&"}
+	validCharacters := []string{"*", "$", "#", "+", "@", "/", "%", "=", "-", "-", "_", "&"}
 
 	for _, el := range validCharacters {
 		if el == input {
@@ -112,7 +115,14 @@ func checkIfContainsSymbol(input string) bool {
 
 func getWholeNumbersFromRowInput(input string) []int {
 	finalElements := []int{}
-	intputAsArray := strings.Split(input, ".")
+	reg, err := regexp.Compile("[^0-9]+")
+	if err != nil {
+		panic(err)
+	}
+
+	numericStr := reg.ReplaceAllString(input, ".")
+
+	intputAsArray := strings.Split(numericStr, ".")
 	for _, el := range intputAsArray {
 		elAsInt, _ := strconv.Atoi(clearString(el))
 		if elAsInt != 0 {
